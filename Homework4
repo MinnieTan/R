@@ -1,0 +1,72 @@
+# Quetsion 1
+# (a)
+brand <- read.csv("~/Downloads/brand.csv", header=TRUE)
+plot(brand)
+library("Hmisc")
+
+rcorr(as.matrix(brand))
+
+# (b)
+brand_model <- lm(y~x1+x2, data = brand)
+summary(brand_model)
+
+# (c)
+shapiro.test(residuals(brand_model))
+
+# (d)
+g<-rep(1,16)
+g[brand$y<=81.75]=0
+library(ALSM)
+
+bftest(brand_model,g)
+
+# (e)
+brand_model_F <- lm(y~factor(x1)*factor(x2), brand)
+anova(brand_model)
+
+anova(brand_model, brand_model_F)
+
+# (f)
+Intercept<-rep(1,16)
+tmp <-cbind(Intercept,brand$x1,brand$x2)
+m1 <- 7.25*solve(t(tmp) %*% tmp)
+
+x <- c(1,5,4)
+xh <- as.matrix(x)
+trans.xh <- t(xh)
+b <- c(37.65, 4.425,4.375)
+bm <- as.matrix(b)
+trans.xh %*% bm
+
+#Question 3
+# (a)
+model <- lm(y~x2+x1, brand)
+anova(model)
+
+#Question 5
+insurance <- read.csv("~/Downloads/insurance.csv", header=FALSE)
+colnames(insurance) <- c("month", "size", "type")
+#(a)
+insurance<-cbind(insurance,insurance$size*insurance$type)
+colnames(insurance) <- c("month","size", "type", "x12")
+model11 <- lm(month~size+type+x12, insurance)
+anova(model11)
+
+summary(model11)
+
+#(b)
+qt(0.9,16)
+
+#(c)
+model12<-lm(month~type+size+x12, insurance)
+anova(model12)
+
+summary(model12)
+
+#(d)
+model13<-lm(month~type+size, insurance)
+anova(model13)
+
+summary(model13)
+
+qt(0.9, 17)
