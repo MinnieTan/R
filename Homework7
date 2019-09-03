@@ -1,0 +1,90 @@
+#1
+  #(a)
+premium <- read.table("~/Desktop/premium.txt", quote="\"", comment.char="")
+names(premium) <- c("y", "i", "j")
+  #(b) 
+lm(y~factor(i), premium)
+
+  #(c)
+(lm(y~factor(i), premium))$residuals
+
+sum((lm(y~factor(i), premium))$residuals)
+
+  #(d)
+premium$intercept <- 1
+
+premium$x1 <- 0
+premium$x2 <- 0
+premium$x3 <- 0
+premium$x4 <- 0
+premium[ which( premium$i == 1), ]$x1 <- 1
+premium[ which( premium$i == 2), ]$x2 <- 1
+premium[ which( premium$i == 3), ]$x3 <- 1
+premium[ which( premium$i == 4), ]$x4 <- 1
+premium[ which( premium$i == 5), ]$x1 <- -1
+premium[ which( premium$i == 5), ]$x2 <- -1
+premium[ which( premium$i == 5), ]$x3 <- -1
+premium[ which( premium$i == 5), ]$x4 <- -1
+anova(lm(y ~ x1+x2+x3+x4, premium))
+
+  #(e)
+qf(1-0.1/2, 4, 95)
+
+#2
+  #(a)
+sub1 <- premium[ which(premium$i == 1), ]
+mean(sub1$y)
+
+sub2 <- premium[ which(premium$i == 2), ]
+mean(sub2$y)
+
+sub3 <- premium[ which(premium$i == 3), ]
+mean(sub3$y)
+
+sub4 <- premium[ which(premium$i == 4), ]
+mean(sub4$y)
+
+sub5 <- premium[ which(premium$i == 5), ]
+mean(sub5$y)
+
+  #(b)
+summary(aov(y~factor(i), premium))
+
+  #(c)
+qt(1-0.1/6, 95)
+
+#5
+  #(a)
+programmer <- read.table("~/Desktop/programmer.txt", quote="\"", comment.char="")
+names(programmer) <- c("y", "A", "B", "V4")
+interaction.plot(x.factor = programmer$A, trace.factor = programmer$B, 
+                  response = programmer$y, fun = mean, 
+                  type = "b", legend = TRUE, 
+                  xlab = "A", ylab="y",
+                  pch=c(1,19), col = c("#00AFBB", "#E7B800"))
+
+  #(b)
+colClasses = c('numeric', 'factor', 'factor', 'factor')
+anova(lm(y ~ A+B, data=programmer))
+
+qt(1-0.01/4, 20)
+
+  #(c)
+anova(lm(y ~ A*B, programmer))
+
+#6
+  #(c)
+qt(1-0.05/6,20)
+
+  #(d)
+interaction.plot(x.factor = programmer$A, trace.factor = programmer$B, 
+                  response = 1/(programmer$y), fun = mean, 
+                  type = "b", legend = TRUE, 
+                  xlab = "A", ylab="1/y",
+                  pch=c(1,19), col = c("#00AFBB", "#E7B800"))
+
+interaction.plot(x.factor = programmer$A, trace.factor = programmer$B, 
+                  response = log(programmer$y), fun = mean, 
+                  type = "b", legend = TRUE, 
+                  xlab = "A", ylab="log(y)",
+                  pch=c(1,19), col = c("#00AFBB", "#E7B800"))
