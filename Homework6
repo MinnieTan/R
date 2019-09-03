@@ -1,0 +1,89 @@
+#1
+cosmetics <- read.csv("~/Downloads/cosmetics.csv")
+mod <- lm(y ~ x1+x2+x3, data = cosmetics)
+summary(mod)
+
+#2
+library(car)
+
+plot(cosmetics[,1:4])
+
+residualPlots(mod)
+
+qqnorm(cosmetics$y, ylab = "Sales")
+
+#3
+avPlots(lm(y ~ x1+x2+x3, data = cosmetics))
+
+#4, 5, and 6
+influencePlot(lm(y ~ x1+x2+x3, cosmetics))
+
+#7
+  #(a)
+plot(cosmetics[,2:4])
+
+cor(cosmetics$x1, cosmetics$x2)
+
+cor(cosmetics$x1, cosmetics$x3)
+
+cor(cosmetics$x2, cosmetics$x3)
+
+  #(b)
+library(fmsb)
+VIF(lm(x1~x2+x3, data = cosmetics))
+
+VIF(lm(x2~x1+x3, data = cosmetics))
+
+VIF(lm(x3~x1+x2, data = cosmetics))
+
+#8
+  #(a)
+library(lmridge)
+
+mod <- lmridge(y ~ x1+x2+x3, data = as.data.frame(cosmetics), K = seq(0, 1, 0.02))
+plot(mod)
+
+  #(b)
+vif(mod)
+
+  #(c)
+summary(lmridge(y ~ x1+x2+x3, data = as.data.frame(cosmetics), K = seq(0, 1, 0.1)))
+
+#9
+  #(a)
+machine <- read.csv("~/Downloads/machine.csv")
+machine.mod <- lm(y ~ x, machine)
+slope <- cor(machine$x, machine$y) * (sd(machine$y)/sd(machine$x))
+intercept <- mean(machine$y) - (slope * mean(machine$x))
+
+resid <- machine.mod$residuals
+plot(resid ~ machine$x, ylab = "Residual", xlab = "x")
+
+  #(b)
+plot(abs(resid) ~ machine$x, ylab = "Absolute Residual", xlab = "y")
+
+plot(resid^2 ~ machine$x, ylab = "Squared Residual", xlab = "x")
+
+  #(c)
+wts <- 1/fitted(lm(abs(residuals(machine.mod))~x, machine))^2
+machine.mod2<-lm(y~x, weight=wts, data=machine)
+summary(machine.mod2)
+
+  #(d)
+resid2 <- machine.mod2$residuals
+plot(resid2 ~ machine$x, ylab = "Residual", xlab = "x")
+
+#10
+library(ALSM)
+
+Abalone <- read.csv("~/Downloads/Abalone_trans.csv")
+A.mod <- lm(weight.s ~ rings+sex+length+diameter+weight.w+height, data = Abalone)
+summary(A.mod)
+
+plot(Abalone[,1:7])
+
+residualPlots(A.mod)
+
+qqnorm(Abalone$weight.s, ylab = "Weight.s")
+
+BestSub(Abalone[,2:7], Abalone$weight.s, num=1)
