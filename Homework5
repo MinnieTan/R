@@ -1,0 +1,50 @@
+#2
+  #(a)
+library(car)
+valuation <- read.csv("~/Downloads/valuation.csv")
+scatterplot(y ~ x1 | x2, data = valuation, xlab = "Selling Price x1", ylab = "Assessed Valuation y", main = "Scatter Plot")
+
+  #(b)
+mod1 <- lm(y ~ x1, data = valuation)
+mod2 <- lm(y ~ x1+x2, data = valuation)
+anova(mod2)
+
+qf(0.95,1,61)
+
+#3
+  #(a)
+proficiency <- read.csv("~/Downloads/proficiency.csv")
+plot(proficiency)
+library("Hmisc")
+
+rcorr(as.matrix(proficiency))
+
+  #(b)
+mod <- lm(y ~ x1+x2+x3+x4, data = proficiency)
+anova(mod)
+
+qf(0.95,1,20)
+
+  #(c)
+library(ALSM)
+
+BestSub(proficiency[,2:5], proficiency$y, num=1)
+
+fmod <- lm(y ~ x1+x3+x4, data = proficiency)
+summary(fmod)
+
+  #(e)
+library(MASS)
+library(leaps)
+library(caret)
+
+set.seed(123)
+train.control <- trainControl(method = "cv", number = 5)
+step.model1 <- train(y ~ x1+x3+x4, data = proficiency, method = "leapBackward", tuneGrid = data.frame(nvmax = 3), trControl = train.control)
+step.model1$results
+
+  #(f)
+proficiencyTest <- read.csv("~/Downloads/proficiencyTest.csv")
+tmod <- lm(y ~ x1+x3+x4, data = proficiencyTest)
+summary(tmod)
+
