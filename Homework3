@@ -1,0 +1,87 @@
+#a
+concentration <- read.csv("~/Downloads/concentration.csv")
+c.mod <- lm(Y~X, concentration)
+summary(c.mod)
+
+#b
+anova(c.mod)
+
+#c
+cF.mod <- lm(Y~factor(X), concentration)
+anova(c.mod, cF.mod)
+
+#d
+
+  #i
+plot(Y~X, concentration)
+abline(c.mod)
+
+  #ii
+resid<-residuals(c.mod)
+plot(concentration$X,resid)
+abline(h=0)
+
+  #iii
+qqnorm(residuals(c.mod))
+qqline(residuals(c.mod))
+
+#e
+library(MASS)
+bcmle <- boxcox(c.mod, lambda = seq(-3,3,by=0.1))
+
+lambda <- bcmle$x[which.max(bcmle$y)]
+lambda
+
+#f
+concentration$tY <- (concentration$Y)^lambda
+cT.mod <- lm(tY~X, concentration)
+plot(tY~X, concentration)
+abline(cT.mod)
+
+residT<-residuals(cT.mod)
+plot(concentration$X,residT)
+abline(h=0)
+
+qqnorm(residuals(cT.mod))
+qqline(residuals(cT.mod))
+
+#a
+diastolic <- readxl_example("diastolic.xlsx")
+read_excel(diastolic)
+d.mod <- lm(Y~X, diastolic)
+summary(d.mod)
+resid_d<-residuals(d.mod)
+plot(diastolic$X,resid_d)
+abline(h=0)
+
+#b
+diastolic_omit <- readxl_example("diastolic_omit.xlsx")
+read_excel(diastolic_omit)
+do.mod <- lm(Y~X, diastolic_omit)
+summary(do.mod)
+
+#c
+new <- data.frame(X = 12)
+ci.reg(do.mod, new, type='n',alpha=0.01)
+
+#d
+  #i
+alpha = 0.1
+n = 7
+confint(lm(Y~X, diastolic_omit),level=0.90)
+
+  #ii
+alpha = 0.1;
+n = 7;
+t = qt(1 - 0.25*alpha, n - 2);
+s_b0 = 3.2136;
+53.0680 - s_b0*t
+53.0680 + s_b0*t
+
+sample <- read_excel("sample.xlsx")
+s.mod <- lm(weight.s~length, sample)
+summary(s.mod)
+abline(s.mod)
+m = mean(sample$length)
+new <- data.frame(length = m)
+ci.reg(do.mod, new, type='m',alpha=0.01)
